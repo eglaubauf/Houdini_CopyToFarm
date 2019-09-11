@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>copyFarm</class>
+ <widget class="QWidget" name="copyFarm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>589</width>
+    <height>510</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CopyToFarm</string>
+  </property>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>561</width>
+     <height>481</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="topMargin">
+     <number>10</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="Top_lbl">
+      <property name="text">
+       <string>Current Workspace:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="ws_line">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="acceptDrops">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="target_lbl">
+      <property name="text">
+       <string>Target Workspace:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="dest_btn">
+      <property name="text">
+       <string>Choose Destination Project Directory</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="files_lbl">
+      <property name="text">
+       <string>Files to Copy</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListView" name="files_lst"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="import_btn">
+      <property name="text">
+       <string>ImportReferences (also saves the current File as *_imported)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="copyAll_rbtn">
+      <property name="text">
+       <string>Copy Everything</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="copyNew_rbtn">
+      <property name="text">
+       <string>Copy Newer Files only</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="openNew_Box">
+      <property name="text">
+       <string>Open File in New Location</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
