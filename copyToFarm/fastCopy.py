@@ -1,3 +1,8 @@
+## Code courtesy of User Dmytro on Stackoverflow
+# https://stackoverflow.com/questions/22078621/python-how-to-copy-files-fast 
+# used under CC-BY-SA as required by Stackoverflow
+# https://stackoverflow.com/help/licensing
+
 import os
 
 class CTError(Exception):
