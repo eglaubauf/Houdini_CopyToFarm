@@ -64,17 +64,14 @@ def open(develop = False):
     tmpWindow = Controller()
     tmpWindow.show() 
 
-# # wrapper to get mayas main window
-# def getMayaMainWindow():
-#     mayaPtr = omui.MQtUtil.mainWindow()
-#     return wrapInstance(long(mayaPtr), QtWidgets.QWidget)
-
 class Controller(QtWidgets.QMainWindow, view.Ui_copyFarm):
 
-    def __init__(self, parent =  hou.ui.mainQtWindow()):
+    def __init__(self, parent = hou.qt.mainWindow()):
         super(Controller, self).__init__(parent)
         
         self.setupUi(self)
+        #Set Houdini Style to Window
+        self.setProperty("houdiniStyle", True)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.core = core.Core()
         self.createConnections()
@@ -87,32 +84,27 @@ class Controller(QtWidgets.QMainWindow, view.Ui_copyFarm):
         self.copyNew_rbtn.clicked.connect(self.setCopyNew)
         self.buttonBox.rejected.connect(self.destroy)
         self.buttonBox.accepted.connect(self.execute)
-        self.openNew_Box.stateChanged.connect(self.openNewCheck)
-        self.import_btn.clicked.connect(self.importReferences)   
 
     #Fill Text Fields with Data
     def initFields(self):
-        return
-        #self.ws_line.setText(self.core.ws)
-        #self.updateLinkedFiles()
+        self.ws_line.setText(self.core.ws)
+        self.updateLinkedFiles()
    
     #Update Linked Files in List
     def updateLinkedFiles(self):
         files = self.core.getAllLinkedFiles()
         model = QtGui.QStandardItemModel()
         self.files_lst.setModel(model)
-        for f in files:
+        for parm, f in files:
             item = QtGui.QStandardItem(f)
             model.appendRow(item)
 
     # #Set Destintation by User
     def setDestination(self):
-        return
-    #     # userDest = cmds.fileDialog2(fm=3)
-
-    #     # if userDest is not None:
-    #     #     self.core.setDestination(userDest[0])
-    #     #     self.dest_btn.setText(self.core.dest)
+        userDest = hou.ui.selectFile(title='Choose a Destination', file_type=hou.fileType.Directory)
+        if userDest is not None:
+            self.core.setDestination(userDest)
+            self.dest_btn.setText(self.core.dest)
     
     #Set User Preferences    
     def setCopyAll(self):
@@ -122,42 +114,20 @@ class Controller(QtWidgets.QMainWindow, view.Ui_copyFarm):
     def setCopyNew(self):
         self.core.setCopyAll(False)
 
-    #Set User Preferences 
-    def openNewCheck(self):
-        self.core.setOpenNew(self.openNew_Box.isChecked())
-
-    # #Import all References to current File
-    def importReferences(self):
-        return
-    #     count = self.core.importReference()
-    #     self.updateLinkedFiles()
-    #     #Send Messages to User
-    #     self.message(str(count) + 'References Imported Successfully')
-    #     self.message('The File has been saved as ' + cmds.file(q=True, sn= True))
-
-    # #Display a Message to the User
-    # def message(self, msg):
-    #     cmds.confirmDialog(m = msg, b='Okay')
-
-    # #Execute Copying of Files
+    #Execute Copying of Files
     def execute(self):
-        return
-    #     #Check if Destination has been set correctly
-    #     if self.core.dest is '':
-    #         cmds.confirmDialog(m='Please set a destination first', b='Okay')
-    #         return
-    #     count = self.core.copyFiles()
-    #     if count == 0:
-    #         message = 'An error occured during copying - Please Check your Destination Path'
-    #         cmds.confirmDialog(m=message, b='Okay')
-    #         return
-    #     message = str(count) + ' Files copied succesfully'
-    #     cmds.confirmDialog(m=message, b='Okay')
+        #Check if Destination has been set correctly
+        if self.core.dest is '':
+            hou.ui.displayMessage('Please set a destination first', buttons=('Ok',))
+            return
+        count = self.core.copyFiles()
+        if count == 0:
+            hou.ui.displayMessage('An error occured during copying - Please Check your Source and Destination Paths', buttons=('Ok',))
+            return
+        message = str(count) + ' Files copied succesfully'
+        hou.ui.displayMessage(message, buttons=('Ok',))
         
-    #     if(self.core.OpenNew):
-    #         self.core.setNewWorkspace()
-    #         self.core.reOpenFile()
-    #     self.destroy()
+        self.destroy()
 
 
 

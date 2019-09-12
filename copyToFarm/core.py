@@ -23,39 +23,33 @@
 # THE SOFTWARE.
 
 import os
-#import maya.cmds as cmds
-#import pymel.core as pm
+import hou
 import fastCopy as fc
 
 class Core():
 
     def __init__(self):
-        #self.ws = self.getWorkspace()
+        self.ws = self.getWorkspace()
         self.files = []
         self.copyAll = True
         self.dest = ''
+        self.destinationHip = ''
         self.OpenNew = False
         self.ImportFlag = False
 
-    # # Query the Current Workspace
-    # def getWorkspace(self):  
-    #     return cmds.workspace(q=True, directory=True, rd = True)
-
- 
+    # # Query the Current Workspace (Hip File directory)
+    def getWorkspace(self):  
+        return hou.hipFile.path()[:-len(hou.hipFile.basename())] 
     
-    # # Gets a List of all Files in a Maya Scene
-    # def getAllLinkedFiles(self):
-    #     self.files = cmds.file(query=1, list=1, withoutCopyNumber=1)   
-    #     return self.files
+    # Gets a List of all Files in a Maya Scene
+    def getAllLinkedFiles(self):
+        self.files = hou.fileReferences()
+        return self.files
 
     # Set the New Destination
     def setDestination(self, newDest):            
         self.dest = newDest
         return True
-
-    # #Sets the Workspace to the New Directory
-    # def setNewWorkspace(self):
-    #     cmds.workspace(self.dest, openWorkspace=True)
 
     #Set all Files to Copy
     def setCopyAll(self, flag):
@@ -69,28 +63,17 @@ class Core():
     def setImport(self, flag):
         self.importFlag = flag
 
-
-    # #Import all Levels of References 
-    # def importReference(self):
-    #     changed = True
-    #     count = 0
-    #     while changed is True: #Call As long as there is a Change
-    #         changed = False
-    #         references = cmds.file(q=True, r=True)
-    #         if references is not None: 
-    #             for r in references:
-    #                 cmds.file(r, ir=True)
-    #                 changed = True
-    #                 count +=1
-    #     self.saveFileAppend('_imported')
-       
-        # return count    
-
     #Copies all Files to a new Workspace
     def copyFiles(self):
+        
         count = 0
-        for f in self.files:
+        #Save File first
+        self.saveFile()
 
+        #Now Copy all references
+        for parm, f in self.files:
+            
+            f = hou.expandString(f)
             occur = f.rfind("/")
             #Full Paths from SourceFile
             sourceFile = f[occur+1:]
@@ -103,9 +86,11 @@ class Core():
             else:
                 occur = sourcePath.find('/')
                 sourcePathSub = sourcePath[occur:]
+            sourcePathSub = sourcePathSub.strip('/')
+              
 
             # create Directories if Missing
-            destinationPath = self.dest + '/' + sourcePathSub
+            destinationPath = self.dest + sourcePathSub
             if not os.path.exists(destinationPath):
                 try:
                     os.makedirs(destinationPath)
@@ -113,46 +98,51 @@ class Core():
                     return 0
                     
             #Create CopyPath
-            destination = self.dest + '/' + sourcePathSub + sourceFile
-
+            destination = destinationPath + '/' + sourceFile
             #Copy only Newer Files?
             if self.copyAll is False:
                 if os.path.exists(destination):
                     if os.path.getctime(f) > os.path.getctime(destination) is True:
                         try:
                             fc.copyfile(f, destination)
-                        except fc.CTError:
+                        except:
                             return 0
                         count += 1
             else: 
                 try:
                     fc.copyfile(f, destination)
-                except fc.CTError:
+                except:
                     return 0
                 count +=1
+            
+            destinationParm = "$HIP/" + sourcePathSub + '/' + sourceFile
+            parm.set(destinationParm)
+            count += 1
 
+        #Copy our Hip File in as a last Step
+        if self.saveHipFileToDest() == 0:
+            return 0
         return count
 
+    def saveHipFileToDest(self):
+        # create our Target Directory if Missing - checked already, but for future usage of this scripts
+        if not os.path.exists(self.dest):
+            try:
+                os.makedirs(self.dest)
+            except WindowsError:
+                return 0
+           
+        self.destinationHip = self.dest + hou.hipFile.basename()
+        hou.hipFile.save(self.destinationHip)
+        return 1
+    
     # #Reopens The File in the New Workspace
-    # def reOpenFile(self):
-    #     self.saveFile()
-        
-    #     filepath = cmds.file(q=True, sn= True)
-    #     # Get Folders inbetween Project and SceneFile to be able to open the copied file on the new location
-    #     f = filepath[len(self.ws):]
-    #     f = f[:f.rfind('/')+1]        
-    #     filepath = self.dest + '/' +  f + cmds.file(q=True, sn= True, shn=True)
-    #     cmds.file( filepath , open=True )
+    def reOpenFile(self):
+        hou.hipFile.load(self.destinationHip, suppress_save_prompt=True)
 
     # #Save Current File
-    # def saveFile(self):
-    #     cmds.file(save=True)
-
-    # #Save current file with a String appended
-    # def saveFileAppend(self, suffix):
-    #     filepath = cmds.file(q=True, sn= True)[:-3] + suffix
-    #     cmds.file(rename = filepath)
-    #     cmds.file(save=True)
+    def saveFile(self):
+        hou.hipFile.save()
 
  
 
