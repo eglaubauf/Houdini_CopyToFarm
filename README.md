@@ -30,7 +30,13 @@ This script has been tested with Houdini 17.5.360 and Windows 10.
 ## Installation
 
 1. Download zip or clone repo
-2. Copy the Folder "CopyToFarm" to your "C:\Users\<User>\Documents\maya\2019\scripts" Folder
+2. Add the following Code to your 123.py or 456.py File which is located at '*UserDir*\houdini17.5\scripts' (Create it if you need to)
+
+```
+import sys 
+sys.path.append("<Path to Your Downloaded Folder>\Houdini_CopyToFarm") 
+```
+
 3. Add provided Shelf or add Lines below to a shelf button:
 
 ```
