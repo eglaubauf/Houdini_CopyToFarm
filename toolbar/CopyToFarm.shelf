@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <shelfSet name="shelf_set_1" label="Create and Refine">
+    <memberToolshelf name="FarmTools"/>
+  </shelfSet>
+
+  <toolshelf name="FarmTools" label="FarmTools">
+    <memberTool name="CopyToFarm"/>
+  </toolshelf>
+
+  <tool name="CopyToFarm" label="CopyToFarm" icon="PLASMA_App">
+    <script scriptType="python"><![CDATA[import copyToFarm.controller as copyFarmCtrl
+reload(copyFarmCtrl)
+copyFarmCtrl.open()]]></script>
+  </tool>
+
