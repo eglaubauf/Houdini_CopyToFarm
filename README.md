@@ -44,3 +44,9 @@ import copyToFarm.controller as copyFarmCtrl
 reload(copyFarmCtrl)
 copyFarmCtrl.open()
 ```
+
+### Contact/Issues/Features/Questions
+
+If you find any bugs, have suggestions or anything else please contact me via Twitter or per Mail. Please check out my other Repos as well, they might be handy to you. For any questions and/or improvement suggestions just contact me via twitter or mail.<br>
+Twitter: @eglaubauf <br>
+Web: www.elmar-glaubauf.at
