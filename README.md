@@ -1,5 +1,9 @@
 # Houdini_CopyToFarm
 
+## Development stopped
+This plugin will not be developed any further
+
+
 This script provides a window in which the user is able to select a directory to copy the current file and it´s dependencies to a different, arbitrary location (e.g. a network storage). In this process the script will copy all linked/referenced files to the chosen location as long as they are below the current workspace. 
 
 The addon also provides the user with a list of files which will be copied. The script is optmized for fast copying and copies only the files which are referenced or linked to within Houdini.
